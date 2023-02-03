@@ -1,0 +1,18 @@
+{
+  "name": "eat-every-word",
+  "version": "1.0.0",
+  "description": "Eat Every Word.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LX86",
+  "license": "MIT",
+  "dependencies": {
+    "@replit/database": "^2.0.2",
+    "express": "^4.18.2",
+    "masto": "^5.7.0",
+    "node-cron": "^3.0.2"
+  },
+  "devDependencies": {}
+}

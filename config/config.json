@@ -1,0 +1,10 @@
+{
+    "instanceUrl": "https://botsin.space",
+    "onReplit": false,
+    "prefix": "I eat ",
+    "finalMessage": "Good night.",
+    "schedule": "0 */3 * * *",
+    "postConfig": {
+        "language": "en"
+    }
+}
