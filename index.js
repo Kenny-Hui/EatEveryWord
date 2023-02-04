@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const config = require('./config/config.json');
 const wordList = require('./words.js');
 const fs = require('fs');
-const Mastodon = require('masto');
+const Mastodon = require("./mastodon");
 const COUNT_PATH = "data/count.txt";
 let replitDB;
 let mastodonClient;
@@ -43,25 +43,32 @@ async function sendNextWord() {
 
 async function startUp() {
     if(config.onReplit) {
-        let p = require('./replit');
-        replitDB = new p();
-        require('./express.js');
+        let Replit = require('./replit');
+        replitDB = new Replit();
     }
 
-    mastodonClient = await Mastodon.login({
-        accessToken: config.accessToken || process.env["ACCESS_TOKEN"],
-        timeout: 20 * 1000,
-        url: config.instanceUrl
-    });
-
+    mastodonClient = new Mastodon(config.instanceUrl, (config.accessToken || process.env["ACCESS_TOKEN"]));
     currentCount = await readData();
+    let authData = await mastodonClient.authorize();
+
+    if(authData.error != null) {
+        console.log("Unable to login: " + authData.error);
+        return;
+    }
+
     console.log("Bot started! Last word is " + wordList[currentCount] + ".");
 
+    if(authData.tag != null) {
+        console.log("Logged in as " + authData.tag);
+    }
+
     let schedule = cron.schedule(config.schedule, async () => {
-        if(currentCount < wordList.length - 1) {
+        let totalWordLength = wordList.length - 1;
+        if(currentCount < totalWordLength) {
             await sendNextWord();
-        } else if (currentCount >= wordList.length - 1) {
+        } else if (currentCount >= totalWordLength) {
             increment();
+
             let finalMessage = config.finalMessage;
             if(finalMessage != null) {
                 await toot(finalMessage);
@@ -75,12 +82,14 @@ async function startUp() {
 
 async function toot(message) {
     if(mastodonClient != null && message != null) {
-        const postConfig = config.postConfig || {};
-        const msgPrefix = config.prefix || "";
-        postConfig.status = msgPrefix + message;
+        const postParams = config.postConfig || {};
+        const msgPrepend = config.prefix || "";
+        postParams.status = msgPrepend + message;
 
-        let post = await mastodonClient.v1.statuses.create(postConfig);
-        console.log(message + ": " + post.url);
+        let post = await mastodonClient.post(postParams);
+        if(post.success) {
+            console.log(message + ": " + post.url);
+        }
     }
 }
 
