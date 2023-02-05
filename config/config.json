@@ -5,6 +5,7 @@
     "finalMessage": "Good night.",
     "schedule": "0 */3 * * *",
     "postConfig": {
+        "visibility": "unlisted",
         "language": "en"
     }
 }
