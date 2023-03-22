@@ -1,9 +1,9 @@
 # Eat Every Word
-This is the source code for the [Eat Every Word](https://botsin.space/@EatEveryWord) bot.
-Not that fancy but I guess it works???
+This is the source code for the [Eat Every Word](https://botsin.space/@EatEveryWord) bot.  
+Should work on any instance with a Mastodon compatible API, not that fancy but I guess it works???
 
 ### Config (config/config.json)
-- `instanceUrl`: The URL of your mastodon instance
+- `instanceUrl`: The URL of your instance
 - `onReplit`: This should be set to true if you are hosting this on replit, which utilize the replit database and will save the value properly.
 - `prefix`: This is a string that is prepended before the message, set it to null if you don't need any prefix.
 - `finalMessage` - This is a string that will be sent after all word has been successfully sent. After that the bot will shut down.
